@@ -23,6 +23,10 @@ struct BaseLitEntityMaterial {
     glm::vec4 diffuse_tint;
     glm::vec4 specular_tint;
     glm::vec4 ambient_tint;
+    float diffuse_factor;
+    float specular_factor;
+    float ambient_factor;
+
     float shininess;
 };
 

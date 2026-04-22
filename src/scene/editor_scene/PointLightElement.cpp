@@ -76,7 +76,7 @@ void EditorScene::PointLightElement::add_imgui_edit_section(MasterRenderScene& r
     transformUpdated |= ImGui::Checkbox("Show Visuals", &visible);
     transformUpdated |= ImGui::DragFloat("Visual Scale", &visual_scale, 0.01f, 0.0f, FLT_MAX);
     ImGui::DragDisableCursor(scene_context.window);
-
+    
     if (transformUpdated) {
         update_instance_data();
     }

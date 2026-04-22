@@ -12,6 +12,7 @@ std::unique_ptr<EditorScene::EntityElement> EditorScene::EntityElement::new_defa
                 {1.0f, 1.0f, 1.0f, 1.0f},
                 {1.0f, 1.0f, 1.0f, 1.0f},
                 {1.0f, 1.0f, 1.0f, 1.0f},
+                1.0f, 1.0f, 1.0f, // ambient, diffuse and specular factors
                 512.0f,
             }
         },
@@ -76,6 +77,22 @@ void EditorScene::EntityElement::add_imgui_edit_section(MasterRenderScene& rende
     scene_context.texture_loader.add_imgui_texture_selector("Diffuse Texture", rendered_entity->render_data.diffuse_texture);
     scene_context.texture_loader.add_imgui_texture_selector("Specular Map", rendered_entity->render_data.specular_map_texture, false);
     ImGui::Spacing();
+
+    ImGui::Text("Material");
+
+    bool changed = false;
+
+    changed |= ImGui::ColorEdit4("Ambient", &material.ambient_tint[0]);
+    changed |= ImGui::SliderFloat("Ambient Factor", &material.ambient_factor, 0.0f, 2.0f);
+    changed |= ImGui::ColorEdit4("Diffuse", &material.diffuse_tint[0]);
+    changed |= ImGui::SliderFloat("Diffuse Factor", &material.diffuse_factor, 0.0f, 2.0f);
+    changed |= ImGui::ColorEdit4("Specular", &material.specular_tint[0]);
+    changed |= ImGui::SliderFloat("Specular Factor", &material.specular_factor, 0.0f, 2.0f);
+    changed |= ImGui::SliderFloat("Shininess", &material.shininess, 1.0f, 100.0f);
+    
+    if (changed) {
+        update_instance_data();
+    }
 }
 
 void EditorScene::EntityElement::update_instance_data() {
