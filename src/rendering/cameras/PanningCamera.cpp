@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
 #include "utility/Math.h"
@@ -45,10 +46,17 @@ void PanningCamera::update(const Window& window, float dt, bool controls_enabled
     pitch = clamp(pitch, PITCH_MIN, PITCH_MAX);
     distance = clamp(distance, MIN_DISTANCE, MAX_DISTANCE);
 
-    view_matrix = glm::translate(glm::vec3{0.0f, 0.0f, -distance});
+    glm::mat4 rot_x = glm::rotate(yaw, glm::vec3{0.0f, 1.0f, 0.0f});
+    glm::mat4 rot_y = glm::rotate(pitch, glm::vec3{1.0f, 0.0f, 0.0f});
+    glm::mat4 rotation = rot_y * rot_x;
+    
+    glm::vec3 offset = glm::vec3(rotation * glm::vec4(0.0f, 0.0f, distance, 1.0f));
+    glm::vec3 camera_pos = focus_point + offset;
+
+    view_matrix = glm::lookAt(camera_pos, focus_point, glm::vec3{0.0f, 1.0f, 0.0f});
     inverse_view_matrix = glm::inverse(view_matrix);
 
-    projection_matrix = glm::infinitePerspective(fov, window.get_framebuffer_aspect_ratio(), 1.0f);
+    projection_matrix = glm::perspective(fov, window.get_framebuffer_aspect_ratio(), near, 1000.0f);
     inverse_projection_matrix = glm::inverse(projection_matrix);
 }
 
