@@ -1,5 +1,5 @@
 # Initialise cmake script
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 project(cits3003_project)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -20,6 +20,8 @@ add_subdirectory(lib/glfw)
 add_subdirectory(lib/glm)
 # end glm
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # assimp
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
@@ -27,6 +29,11 @@ set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE)
 add_subdirectory(lib/assimp)
+if (APPLE)
+    target_compile_definitions(assimp PRIVATE _DARWIN_C_SOURCE)
+    target_compile_options(zlibstatic PRIVATE -include stdio.h)
+    target_compile_definitions(zlibstatic PRIVATE _DARWIN_C_SOURCE)
+endif()
 # end assimp
 
 # stb
@@ -64,6 +71,10 @@ function(configure_lab_target TARGET_NAME)
 
     if (APPLE)
         target_link_libraries(${TARGET_NAME} "-framework Cocoa" "-framework IOKit")
+    endif()
+    
+    if (APPLE)
+        target_compile_definitions(${TARGET_NAME} PRIVATE _DARWIN_C_SOURCE)
     endif()
 
     # Copy executable post build
