@@ -18,6 +18,7 @@ void BaseLitEntityShader::get_uniforms_set_bindings() {
     specular_tint_location = get_uniform_location("specular_tint");
     ambient_tint_location = get_uniform_location("ambient_tint");
     shininess_location = get_uniform_location("shininess");
+    
     // Texture sampler bindings
     set_binding("diffuse_texture", 0);
     set_binding("specular_map_texture", 1);
@@ -31,9 +32,9 @@ void BaseLitEntityShader::set_instance_data(const BaseLitEntityInstanceData& ins
     // Calculate and set material properties
     const auto& entity_material = instance_data.material;
 
-    glm::vec3 scaled_diffuse_tint = glm::vec3(entity_material.diffuse_tint) * entity_material.diffuse_tint.a;
-    glm::vec3 scaled_specular_tint = glm::vec3(entity_material.specular_tint) * entity_material.specular_tint.a;
-    glm::vec3 scaled_ambient_tint = glm::vec3(entity_material.ambient_tint) * entity_material.ambient_tint.a;
+    glm::vec3 scaled_diffuse_tint = glm::vec3(entity_material.diffuse_tint) * entity_material.diffuse_factor;
+    glm::vec3 scaled_specular_tint = glm::vec3(entity_material.specular_tint) * entity_material.specular_factor;
+    glm::vec3 scaled_ambient_tint = glm::vec3(entity_material.ambient_tint) * entity_material.ambient_factor;
 
     glProgramUniform3fv(id(), diffuse_tint_location, 1, &scaled_diffuse_tint[0]);
     glProgramUniform3fv(id(), specular_tint_location, 1, &scaled_specular_tint[0]);
